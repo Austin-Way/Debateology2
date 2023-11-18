@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+
+        #sidebar {
+            width: 200px;
+            background-color: #333333;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+
+        #sidebar ul li a {
+            text-decoration: none;
+            color: #aaaaaa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            display: block;
+            border: 1px solid #555555;
+        }
+
+
+        #sidebar ul li a:hover {
+            background-color: #555555;
+            color: #ffffff;
+            border-color: #aaaaaa;
+        }
+
+
+        #chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: calc(100% - 240px);
+            padding: 20px;
+            box-sizing: border-box;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+
+        #chat-messages {
+            width: 100%;
+            max-height: 70%;
+            overflow: auto;
+            border: 1px solid #333333;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            overflow-x: hidden;
+        }
+
+
+        #chat-form {
+            display: flex;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+
+        #chat-form input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #333333;
+            border-radius: 4px 0 0 4px;
+            color: #ffffff;
+            background-color: #555555;
+        }
+
+
+        #chat-form button {
+            border: none;
+            background-color: #4CAF50;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+
+        #chat-form button:hover {
+            background-color: #45a049;
+        }
+
+
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+
+        .message-box {
+            background: none;
+            color: #f4f4f4;
+            padding: 0;
+            border-radius: 0;
+            width: 100%;
+            margin: 0;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+
+        .message-meta {
+            font-size: 12px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+
+        .message-meta span {
+            color: #ffffff; /* Change the color to white for the username */
+        }
+
+
+
+
+        .message-title {
+            font-size: 20px;
+            margin-bottom: 5px;
+            color: #14171a;
+            font-weight: bold;
+        }
+
+
+        .message-content {
+    font-size: 16px;
+    color: #ffffff; /* Updated the text color to white */
+    margin-bottom: 10px;
+}
+
+
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><button onclick="window.location.href='post.html'" id="post-btn" style="border: none; background-color: #4CAF50; color: #ffffff; padding: 12px 20px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Create a New Post</button></li> <!-- Styled button for Post Page -->
+        </ul>
+    </div>
+
+
+    <div id="chat">
+        <div id="chat-messages"></div>
+    </div>
+
+
+    <script>
+        var ws_uri = "ws://localhost:9600";
+        var websocket = new WebSocket(ws_uri);
+
+
+        websocket.onmessage = function(event) {
+            var data = JSON.parse(event.data);
+            var messageSender = data.username === "You" ? "You" : "User";
+            if (data.type === "message") {
+                var chat_messages = document.getElementById("chat-messages");
+                var formattedMessage = formatMessage(data.message, messageSender);
+                chat_messages.insertAdjacentHTML('beforeend', formattedMessage);
+            }
+        };
+
+
+        function formatMessage(message, senderUsername, title) {
+    if (typeof title === 'undefined') {
+        title = '';
+    }
+
+
+    message = message.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    message = message.replace(/--(.*?)--/g, '<strike>$1</strike>');
+    message = message.replace(/~~(.*?)~~/g, '<u>$1</u>');
+    message = message.replace(/__(.*?)__/g, '<i>$1</i>');
+    message = message.replace(/\^\^(.*?)\^\^/g, '<sup>$1</sup>');
+    message = message.replace(/\$\$!!(.*?)!!\$\$/g, '<span class="rainbow-text">$1</span>');
+    message = message.replace(/\$\$(.*?)\$\$/g, '<span style="background-image: linear-gradient(45deg, #f3ec78, #af78ec, #78e2ec, #ec7878, #78ec8e, #ecaa78);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">$1</span>');
+
+
+    var time = new Date();
+    var hours = time.getHours();
+    var minutes = time.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var timestamp = hours + ':' + minutes + ' ' + ampm;
+    var date = time.toLocaleDateString('en-US');
+
+
+    var formattedMessage = `
+        <div class="message-container">
+            <div class="message-box">
+                <div class="message-title">${title}</div>
+                <div class="message-content">${message}</div>
+                <div class="message-meta"><span style="color: white;">@${senderUsername}</span> &bull; ${timestamp} &bull; ${date}</div>
+            </div>
+        </div>
+        <div style="border-bottom: 1px solid #555555; margin-bottom: 20px;"></div>
+    `;
+
+
+    return formattedMessage;
+}
+
+
+        function rainbowText() {
+            const colors = ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'];
+            let index = 0;
+            setInterval(() => {
+                const rainbowTextElements = document.getElementsByClassName('rainbow-text');
+                for (let i = 0; i < rainbowTextElements.length; i++) {
+                    rainbowTextElements[i].style.color = colors[index];
+                }
+                index = (index + 1) % colors.length;
+            }, 100);
+        }
+
+
+        rainbowText(); // Call the function to start the color-changing effect
+    </script>
+</body>
+</html>

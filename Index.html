@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            font-family: 'Poppins', sans-serif; /* Updated font-family to 'Poppins', sans-serif */
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+
+        #sidebar {
+            width: 250px;
+            background-color: #151F2B;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        #logo {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 30px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        #logo img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        #separator {
+            border-top: 1px solid #555555;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar ul li a {
+            text-decoration: none;
+            color: #aaaaaa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            display: block;
+            border: none;
+        }
+
+        #sidebar ul li a:hover {
+            background-color: #2B353F;
+            color: #ffffff;
+        }
+
+        #sidebar ul li a.active {
+            background-color: #2B353F;
+            color: #ffffff;
+        }
+        #profile-info {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#username {
+    color: #aaaaaa;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#logout-btn {
+    border: none;
+    background-color: #2B353F;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#logout-btn:hover {
+    background-color: #455569;
+}
+        #container {
+            width: 50%;
+            height: 100vh;
+            background-color: #111B23;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #chat-messages {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: hidden;
+            background-color: transparent;
+            border: none;
+        }
+
+        #chat-messages::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        #chat-messages::-webkit-scrollbar-track {
+            background: #111B23;
+        }
+
+        #chat-messages::-webkit-scrollbar-thumb {
+            background-color: #555;
+            border-radius: 10px;
+            border: 3px solid #1a1a1a;
+        }
+
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .message-box {
+            background: transparent;
+            color: #f4f4f4;
+            padding: 0;
+            border-radius: 0;
+            width: 100%;
+            margin: 0;
+            margin-bottom: 20px;
+            text-align: left;
+            border: none;
+        }
+
+        .message-meta {
+            font-size: 12px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .message-meta span {
+            color: #ffffff;
+        }
+
+        .message-title {
+            font-size: 20px;
+            margin-bottom: 5px;
+            color: #14171a;
+            font-weight: bold;
+        }
+
+        .message-content {
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        #sidebar-extension {
+            flex: 1;
+            background-color: #151F2B;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .debate-box {
+            background-color: #37444E;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: 2px solid #2B353F;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .debate-box:hover {
+            background-color: #455569;
+            border-color: #3B4652;
+        }
+
+        .debate-title {
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: bold;
+            margin-bottom: 5px; /* Reduced margin for a more compact look */
+            word-wrap: break-word;
+            overflow: hidden;
+            text-overflow: ellipsis; /* Ellipsis for long titles */
+        }
+
+        .debate-content {
+            font-size: 14px;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+        #updateModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #151F2B; /* Match the dark blue theme */
+            color: #ffffff; /* Text color */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            text-align: center; /* Center-align text */
+        }
+
+        #updateModal h2 {
+            color: #ffffff;
+        }
+
+        #updateModal p {
+            color: #aaaaaa;
+        }
+
+        #updateModal ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #updateModal li {
+            margin-bottom: 10px;
+        }
+
+        #updateModal button {
+            background-color: #4CAF50;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #updateModal button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <div id="logo" style="margin-top: 25px; margin-bottom: 5px; display: flex; align-items: center;">
+            <img src="DebateologyLogo.png" alt="Logo" style="width: 60px; height: 60px; margin-right: 10px; margin-bottom: 2px;">
+            <span style="color: #ffffff; font-size: 25px; font-weight: bold;">Debateology</span>
+        </div>
+
+        <div id="separator" style="margin-top: 10px;"></div>
+        <ul style="margin-top: 10px;">
+            <li><a href="#" class="active">Home</a></li> <!-- Add the class 'active' to the current page -->
+            <li><a href="settings.html">Settings<sup>  BETA</sup></a></li>
+            <li><button onclick="window.location.href='post.html'" id="post-btn" style="border: none; background-color: #4CAF50; color: #ffffff; padding: 12px 20px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Create a New Post</button></li>
+        </ul>
+        <div id="profile-info" style="margin-top: auto; padding: 20px; text-align: center; box-sizing: border-box;">
+            <span id="username" style="color: #aaaaaa; font-size: 16px; font-weight: bold; margin-bottom: 10px;">Your Username</span>
+            <button id="logout-btn" style="width: 80%; border: none; background-color: #151F2B; color: #ffffff; padding: 10px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">Log Out</button>
+        </div>
+    </div>
+    
+    </div>
+    <div id="container">
+        <div id="chat-messages">
+            <div class="message-container">
+                <div class="message-box">
+
+                </div>
+            </div>
+            <!-- Add more message-container elements as needed -->
+        </div>
+    </div>
+
+    <div id="sidebar-extension">
+        <h2>Ongoing Debates</h2>
+        <div class="debate-box">
+            <div class="debate-title">Debate Topic 1</div>
+            <div class="debate-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+        </div>
+        <div class="debate-box">
+            <div class="debate-title">Debate Topic 2</div>
+            <div class="debate-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+        </div>
+    </div>
+    <div id="updateModal">
+        <h2>Version Update</h2>
+        <p>You are now using version: 1.02.01.1</p>
+        <p>Changelog:</p>
+        <ul>
+            <li>Sidebar Added</li>
+            <li>Settings Added</li>
+            <li>Posts Added</li>
+            <li>Styles Updated</li>
+            <li>User post management Updated</li>
+            <li>Added User Requested Easter Eggs!</li>
+
+            <!-- Add more items to the changelog as needed -->
+        </ul>
+        <button onclick="closeUpdateModal()">Close</button>
+    </div>
+</body>
+<script>
+    var ws_uri = "ws://localhost:9600";
+    var websocket = new WebSocket(ws_uri);
+    var userId;
+
+    websocket.onopen = function(event) {
+        console.log('Connected to WebSocket server');
+    };
+
+    websocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+        
+        if (data.type === 'userId') {
+            userId = data.data;
+            console.log('Your user ID is:', userId);
+        } else if (data.type === 'updateUsername') {
+            // Handle username updates if needed
+            console.log(`User ${data.userId} changed their username to: ${data.username}`);
+        } else if (data.type === 'message') {
+            var messageSender = data.userId === userId ? 'You' : 'User';
+            var chat_messages = document.getElementById('chat-messages');
+            var formattedMessage = formatMessage(data.message, messageSender, data.title);
+            chat_messages.insertAdjacentHTML('beforeend', formattedMessage);
+        }
+    };
+
+    function submitPost() {
+        var title = document.getElementById('postTitle').value;
+        var content = document.getElementById('postContent').value;
+
+        if (title.trim() === '' || content.trim() === '') {
+            alert('Please fill out both title and content fields.');
+            return;
+        }
+
+        var post = {
+            title: title,
+            content: content
+        };
+
+        var data = {
+            type: 'message',
+            userId: userId,
+            title: title,
+            message: `**${title}**\n${content}`
+        };
+
+        // Send the data to the WebSocket server
+        websocket.send(JSON.stringify(data));
+
+        // Append the post to the chat area
+        var chat_messages = document.getElementById('chat-messages');
+        var formattedPost = formatMessage(data.message, 'You', data.title);
+        chat_messages.insertAdjacentHTML('beforeend', formattedPost);
+
+        // Display an alert to indicate successful submission
+        alert('Post submitted successfully!');
+
+        // Clear the input fields after submission
+        document.getElementById('postTitle').value = '';
+        document.getElementById('postContent').value = '';
+    }
+
+    function formatMessage(message, senderUsername, title) {
+        if (typeof title === 'undefined') {
+            title = '';
+        }
+
+        message = message.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        message = message.replace(/--(.*?)--/g, '<strike>$1</strike>');
+        message = message.replace(/~~(.*?)~~/g, '<u>$1</u>');
+        message = message.replace(/__(.*?)__/g, '<i>$1</i>');
+        message = message.replace(/\^\^(.*?)\^\^/g, '<sup>$1</sup>');
+        message = message.replace(/\$\$!!(.*?)!!\$\$/g, '<span class="rainbow-text">$1</span>');
+        message = message.replace(/\$\$(.*?)\$\$/g, '<span style="background-image: linear-gradient(45deg, #f3ec78, #af78ec, #78e2ec, #ec7878, #78ec8e, #ecaa78);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">$1</span>');
+
+        message = message.replace(/\n/g, '<br>'); // Replace newline characters with HTML line breaks
+
+        var time = new Date();
+        var hours = time.getHours();
+        var minutes = time.getMinutes();
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var timestamp = hours + ':' + minutes + ' ' + ampm;
+        var date = time.toLocaleDateString('en-US');
+
+        var formattedMessage = `
+            <div class="message-container">
+                <div class="message-box">
+                    <div class="message-title">${title}</div>
+                    <div class="message-content">${message}</div>
+                    <div class="message-meta"><span style="color: white;">@${senderUsername}</span> &bull; ${timestamp} &bull; ${date}</div>
+                </div>
+            </div>
+            <div style="border-bottom: 1px solid #555555; margin-bottom: 20px;"></div>
+        `;
+
+        return formattedMessage;
+    }
+
+    function rainbowText() {
+        const colors = ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'];
+        let index = 0;
+        setInterval(() => {
+            const rainbowTextElements = document.getElementsByClassName('rainbow-text');
+            for (let i = 0; i < rainbowTextElements.length; i++) {
+                rainbowTextElements[i].style.color = colors[index];
+            }
+            index = (index + 1) % colors.length;
+        }, 100);
+    }
+
+    rainbowText(); // Call the function to start the color-changing effect
+    function openUpdateModal() {
+            document.getElementById('updateModal').style.display = 'block';
+        }
+
+        // Add this function to close the update modal
+        function closeUpdateModal() {
+            document.getElementById('updateModal').style.display = 'none';
+        }
+
+        // Call the openUpdateModal function when the page is loaded
+        window.onload = function () {
+            openUpdateModal();
+        };
+</script>
+</html>

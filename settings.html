@@ -1,0 +1,203 @@
+<!-- settings.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings</title>
+    <style>
+        body {
+            background-color: #111B23;
+            color: #ffffff;
+            display: flex;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #sidebar {
+            width: 250px;
+            background-color: #151F2B;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        #logo {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 30px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        #logo img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        #separator {
+            border-top: 1px solid #555555;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar ul li a {
+            text-decoration: none;
+            color: #aaaaaa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            display: block;
+            border: none;
+        }
+
+        #sidebar ul li a:hover {
+            background-color: #2B353F;
+            color: #ffffff;
+        }
+
+        #sidebar ul li a.active {
+            background-color: #2B353F;
+            color: #ffffff;
+        }
+        #profile-info {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#username {
+    color: #aaaaaa;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#logout-btn {
+    border: none;
+    background-color: #2B353F;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#logout-btn:hover {
+    background-color: #455569;
+}
+        #settings {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: calc(100% - 500px); /* Adjusted width to compensate for the sidebar */
+            height: 100vh;
+        }
+
+        #settings-content {
+            width: 60%;
+            height: 70%;
+            overflow: auto;
+            border: 1px solid #333;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #151F2B; /* Darker blue background color */
+        }
+
+        #settings-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #settings-form label {
+            color: #ddd;
+            margin-bottom: 10px;
+        }
+
+        #settings-form input {
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #ddd;
+            background-color: #455569; /* Lighter blue background color */
+            margin-bottom: 20px;
+            width: 50%;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #settings-form button {
+            border: none;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #settings-form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <div id="logo" style="margin-top: 25px; margin-bottom: 5px; display: flex; align-items: center;">
+            <img src="DebateologyLogo.png" alt="Logo" style="width: 60px; height: 60px; margin-right: 10px; margin-bottom: 2px;">
+            <span style="color: #ffffff; font-size: 25px; font-weight: bold;">Debateology</span>
+        </div>
+
+        <div id="separator" style="margin-top: 10px;"></div>
+        <ul style="margin-top: 10px;">
+            <li><a href="index.html">Home</a></li> <!-- Add the class 'active' to the current page -->
+            <li><a href="#" class="active">Settings<sup>  BETA</sup></a></li>
+            <li><button onclick="window.location.href='post.html'" id="post-btn" style="border: none; background-color: #4CAF50; color: #ffffff; padding: 12px 20px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Create a New Post</button></li>
+        </ul>
+        <div id="profile-info" style="margin-top: auto; padding: 20px; text-align: center; box-sizing: border-box;">
+            <span id="username" style="color: #aaaaaa; font-size: 16px; font-weight: bold; margin-bottom: 10px;">Your Username</span>
+            <button id="logout-btn" style="width: 80%; border: none; background-color: #151F2B; color: #ffffff; padding: 10px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">Log Out</button>
+        </div>
+    </div>
+
+    <div id="settings">
+        <div id="settings-content">
+            <form id="settings-form">
+                <label for="username">-WOAH This Feature Does Not Seem To Be Working, It Will Be Up And Running Soon-</label><br>
+                <input type="text" id="username" name="username"><br><br>
+                <button type="button" onclick="applySettings()" id="apply-btn">Apply</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function applySettings() {
+            var newName = document.getElementById('username').value;
+
+            if (newName.trim() !== "") {
+                localStorage.setItem('username', newName);
+            }
+
+            alert('Settings applied successfully!');
+        }
+    </script>
+</body>
+</html>
